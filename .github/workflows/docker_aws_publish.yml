@@ -62,7 +62,7 @@ jobs:
         
     - name: Update ECS Service Definition to force deployment
       run: |
-         aws ecs update-service --cluster GoApplicationECSCluster --service GoChatClientService --force-new-deployment
+         aws ecs update-service --cluster GoApplicationECSCluster --service GoChatClientSvc --force-new-deployment
       env: 
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
