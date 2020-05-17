@@ -1,0 +1,65 @@
+doctype html
+html
+    head
+        meta(charset='UTF-8')
+        meta(name='viewport', content='width=device-width, initial-scale=1.0')
+        link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Lato:300,400,700,900&display=swap')
+        link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
+        link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/bulma/0.5.2/css/bulma.css')
+        script(src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js')
+        script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js')
+        style.
+            form {
+                background-color: white;
+            }
+            body {
+                background-image: url('/assets/images/bg.jpg');
+            }
+        title GoChat
+    body
+        #chat-app
+            #chat.has-text-centered
+                section.section.chat-container
+                    .container
+                        .columns
+                            .box.column.is-8.is-offset-2
+                                b Your chat with #{friend.userName}
+                                |
+                                .chat-messages.has-text-left
+                                    ul#chat-messages
+                                        if previousMessages
+                                            each val in previousMessages
+                                                if val['From'] == userName
+                                                   li= 'You' + ' : '+ val['Message']
+                                                else
+                                                    li= val['From'] + ' : '+ val['Message']
+                                form
+                                    .field.has-addons
+                                        p.control.is-expanded
+                                            input(type='text', class='input', placeholder= userName + ' say something to ' + friend.userName, id='message')
+                                        p.control
+                                            input(type='submit', class='button is-success', value='Send')
+        script.
+            const socket = io();
+            socket.on('connect', () => {
+                metadata = {userId: "#{userId}", socketId: socket.id};
+                socket.emit('setSocketId', metadata);
+            });
+            $('form').submit(function() {
+                const name = $('#name').val();
+                const message = $('#message').val();
+                data = {
+                    to: "#{friend.userId}",
+                    from: "#{userId}",
+                    message: `${message}`
+                }
+
+                socket.emit('new_message', JSON.stringify(data));
+                $('#message').val('');
+                $('#chat-messages').append($('<li>').text(`You : ${message}`))
+                return false;
+            });
+
+            socket.on('reply_message', function(message) {
+                $('#chat-messages').append($('<li>').text(message));
+            });
