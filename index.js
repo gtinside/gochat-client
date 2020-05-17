@@ -90,7 +90,7 @@ app.get("/registration", (req, res) => {
 });
 app.post("/loginAction", loginUser)
 
-server = app.listen(8080, () => console.log('Example app listening on port 3000!'));
+server = app.listen(80, () => console.log('GoChat client app listening on port 80!'));
 const webSocket = require('socket.io')(server);
 //Websocket Client details
 webSocket.on('connection', (socket) => {
