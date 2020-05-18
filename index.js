@@ -61,8 +61,28 @@ function loginUser(req, res) {
             })
         }
 
-    })
+    });
+}
 
+function registerAction(req, res) {
+    axios.post("http://localhost:8090/register", {
+        Email: req.body.email,
+        Password: req.body.password,
+        Name: req.body.full_name
+    }).then(function (response) {
+        console.log(response)
+        if (response.data.Status == 'COMPLETED') {
+            req.session.userName = JSON.parse(response.data.Msg)['Name']
+            req.session.userId = JSON.parse(response.data.Msg)['UserId']
+            req.session.userEmail = JSON.parse(response.data.Msg)['Email']
+            res.redirect("/chat")
+        } else {
+            res.render("registration", {
+                errorMsg: response.data.Msg
+            })
+        }
+
+    });
 }
 
 const app = express();
@@ -89,6 +109,7 @@ app.get("/registration", (req, res) => {
     res.render("registration")
 });
 app.post("/loginAction", loginUser)
+app.post("/registerAction", registerAction)
 
 server = app.listen(80, () => console.log('GoChat client app listening on port 80!'));
 const webSocket = require('socket.io')(server);

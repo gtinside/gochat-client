@@ -10,15 +10,18 @@ html(lang="en")
         link(rel='stylesheet', type="text/css"  href='/assets/styles/style.css')
     body
         #main
-            form(action="#")
+            form(action="/registerAction" method='POST')
                 div.label Register for GoChat
                 div.username
-                    input(type="text" placeholder="username")
+                    input(type="text" placeholder="Full Name" name="full_name")
                 div.password
-                    input(type="password" placeholder="password")
+                    input(type="password" placeholder="password" name="password")
                 div.username
-                    input(type="text" placeholder="email")
-                button(type="button") register
+                    input(type="text" placeholder="email" name="email")
+                button(type="submit") register
+                if errorMsg
+                    p
+                        | #{errorMsg}
                 p
                     | already a member
                     a(href="/") Login now
